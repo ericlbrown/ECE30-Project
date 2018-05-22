@@ -1,8 +1,8 @@
-Test cases to consider:
-The list only has 0 or 1 length
-Duplicate numbers in the list
-Negative numbers in the list
-Order of the stack
+#Test cases to consider:
+#The list only has 0 or 1 length
+#Duplicate numbers in the list
+#Negative numbers in the list
+#Order of the stack
 
 ######################
 #                    #
@@ -63,69 +63,74 @@ swap:
 	# a2: index 2
 	# Swap the elements at the given indices in the list
 
-	#don't worry about return address
-	addi $sp, $sp, -12 #make space on stack
-	sw $s0, 12($sp) #storing values/organization
-	sw $s1, 8($sp)
+	### INSERT YOUR CODE HERE
+
+#save t0 and t1 before call
+
+#don't worry about return address
+	addi $sp, $sp, -20 #make space on stack
+	sw $s0, 20($sp) #storing values/organization
+	sw $s1, 16($sp)
+	sw $s2, 12($sp)
+	sw $s3, 8($sp)
 	sw $fp, 4($sp)
+	addi $fp, $fp, -20
 
-	#body of swap function
+#body of swap function
 
-	#loading value from x[lo]
-	li $s1, 4 #used to multiply by index value for number of bits offset from array start
-	mult $a1, $s1 #multiply index by offset constant
-	mflo $t0 #result stored in t0
-	add $t1, $t0, $a0 #address of x[lo] is now stored in t1 : x[lo] = *x[0]+offset
-	lw $s2, 0($t1) #our actual value from x[lo] is
+#loading value from x[lo]
+	sll $a1, $a1, 2 #multiply index by offset constant 4
+	add $t0, $a1, $a0 #address of x[lo] is now stored in t0 : x[lo] = *x[0]+offset
+	lw $s1, 0($t0) #our actual value from x[lo] is now stored in s1
 
-	#repeating above for x[hi]
+#repeating above for x[hi]
 
-	sll
-	add $t1, $t0, $a0
-	lw $s3, 0($t1) #load to s3 the value stored in memory x[hi]
-
+	sll $a2, $a2, 2
+	add $t1, $a2, $a0 #store the address of x[hi0] at t1 temporarily
+	lw $s2, 0($t1) #load to s2 the value stored in memory x[hi]
 
 
+	addi $s0, $s2, 0 #temp variable for hi value
+	addi $s2, $s1, 0  #storing low value in high value register
+	addi $s1, $s0, 0  #storing hi value into low register
+	sw $s1, 0($t0) #saving hi value into low address
+	sw $s2, 0($t1) #saving low value into high address
 
-
-	addi $t0, $s1, 0	 #store value of $a2 to temp register $t0
-	addi $s1, $s0, 0	 #store value of $a1 to $s1
-	addi $s0, $t0, 0 	 #store value of $a2 to $s0
-
-	sw $s0, 0($a1)
-	sw $s1, 0($a2)
-
-	#more organization
-	lw $s0, 12($sp)		#
-	lw $s1, 8($sp)
+#more organization
+	lw $s0, 20($sp) #storing values/organization
+	lw $s1, 16($sp)
+	lw $s2, 12($sp)
+	lw $s3, 8($sp)
 	lw $fp, 4($sp)
-		# return to caller
+# return to caller
 	jr $ra
 
 
 
 
 
+	########################
+	#   medianOfThree      #
+	########################
+	medianOfThree:
 
+		### INSERT YOUR CODE HERE
 
-########################
-#   medianOfThree      #
-########################
-medianOfThree:
+		#orgaizational calle business
 
-
-	#orgaizational calle business
-
-	addi $sp , $sp, num #tbd how far to increment the stack pointer
-	sw $ra, num($sp)
-	#sw $s0 - $s_whatever #tbd how many we need to store
-	sw $fp
-	addi $fp, $fp, num
+	addi $sp , $sp, -60 #tbd how far to increment the stack pointer
+	sw $ra, 24($sp)
+	sw $s0, 20($sp)
+	sw $s1, 16($sp)
+	sw $s2, 12($sp)
+	sw $s3, 8($sp)
+	sw $fp, 4($sp)
+	addi $fp, $fp, 24
 
 
 	#calculating midpoint value
 
-	addi $s0, $a1, $a2 #s0 = lo+hi
+	add $s0, $a1, $a2 #s0 = lo+hi
 	srl $s0, $s0, 2 #(lo+hi)/2
 
 	#now we will worry about getting values from our indexed addresses
@@ -166,15 +171,15 @@ medianOfThree:
 	#orgaizational for caller before call
 
 	#TODO : FIGURE OUT STACK POINTER SIZE
-	sw $t0 offset($sp) #not sure that we actually care about the t vals; just following convention
-	sw $t1 offset($sp)
-	sw $t2 offset($sp)
+	sw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
+	sw $t1 32($sp)
+	sw $t2 36($sp)
 
-	sw $a0 , offset($sp) #a0 doesn't really change, so do we need this?
-	sw $a1 , offset($sp)
-	sw $a2 , offset($sp)
+	sw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
+	sw $a1 , 44($sp)
+	sw $a2 , 48($sp)
 
-	sw $v0 , offset($sp) #do we even have any return from a higher nested instruction?
+	sw $v0 , 52($sp) #do we even have any return from a higher nested instruction?
 
 	#inputs to the swap function are already set because they are the same as for
 	#Median of Three
@@ -184,13 +189,13 @@ medianOfThree:
 
 	#return from calle orgaizational; mostly useless but will we get docked without it
 
-	lw $t0 offset($sp) #not sure that we actually care about the t vals; just following convention
-	lw $t1 offset($sp)
-	lw $t2 offset($sp)
+	lw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
+	lw $t1 32($sp)
+	lw $t2 36($sp)
 
-	lw $a0 , offset($sp) #a0 doesn't really change, so do we need this?
-	lw $a1 , offset($sp)
-	lw $a2 , offset($sp)
+	lw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
+	lw $a1 , 44($sp)
+	lw $a2 , 48($sp)
 
 
 	################################################################################
@@ -208,15 +213,15 @@ medianOfThree:
 	addi $t2, $t2, -1 #same trick as before
 
 	#caller responsibilities
-	sw $t0 offset($sp) #not sure that we actually care about the t vals; just following convention
-	sw $t1 offset($sp)
-	sw $t2 offset($sp)
+	sw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
+	sw $t1 32($sp)
+	sw $t2 36($sp)
 
-	sw $a0 , offset($sp) #a0 doesn't really change, so do we need this?
-	sw $a1 , offset($sp)
-	sw $a2 , offset($sp)
+	sw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
+	sw $a1 , 44($sp)
+	sw $a2 , 48($sp)
 
-	sw $v0 , offset($sp) #do we even have any return from a higher nested instruction?
+	sw $v0 , 52($sp) #do we even have any return from a higher nested instruction?
 
 	#this time we do need to change some things around when passing to swap
 	#$a0 is still the first address of the array
@@ -227,13 +232,13 @@ medianOfThree:
 
 	#return from calle orgaizational; mostly useless but will we get docked without it
 
-	lw $t0 offset($sp) #not sure that we actually care about the t vals; just following convention
-	lw $t1 offset($sp)
-	lw $t2 offset($sp)
+	lw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
+	lw $t1 32($sp)
+	lw $t2 36($sp)
 
-	lw $a0 , offset($sp) #a0 doesn't really change, so do we need this?
-	lw $a1 , offset($sp)
-	lw $a2 , offset($sp)
+	lw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
+	lw $a1 , 44($sp)
+	lw $a2 , 48($sp)
 	###############################################################################
 	#if(x[lo]>x[mid]) swap(x,lo,mid)
 
@@ -251,15 +256,15 @@ medianOfThree:
 	addi $t2, $t2, -1
 
 	#caller responsibilities
-	sw $t0 offset($sp) #not sure that we actually care about the t vals; just following convention
-	sw $t1 offset($sp)
-	sw $t2 offset($sp)
+	sw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
+	sw $t1 32($sp)
+	sw $t2 36($sp)
 
-	sw $a0 , offset($sp) #a0 doesn't really change, so do we need this?
-	sw $a1 , offset($sp)
-	sw $a2 , offset($sp)
+	sw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
+	sw $a1 , 44($sp)
+	sw $a2 , 48($sp)
 
-	sw $v0 , offset($sp) #do we even have any return from a higher nested instruction?
+	sw $v0 , 52($sp) #do we even have any return from a higher nested instruction?
 
 	#updating parameters passed to swap
 	addi $a2 $s3 0 #passing midpoint index to a2
@@ -268,27 +273,26 @@ medianOfThree:
 	bgezal $t2, swap #same jump trick as previously described
 
 	#caller return responsibilities
-	lw $t0 offset($sp) #not sure that we actually care about the t vals; just following convention
-	lw $t1 offset($sp)
-	lw $t2 offset($sp)
+	lw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
+	lw $t1 32($sp)
+	lw $t2 36($sp)
 
-	lw $a0 , offset($sp) #a0 doesn't really change, so do we need this?
-	lw $a1 , offset($sp)
-	lw $a2 , offset($sp)
-
+	lw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
+	lw $a1 , 44($sp)
+	lw $a2 , 48($sp)
 	###############################################################################
 	#swap(x,lo,mid).
 
 	#caller responsibilities
-	sw $t0 offset($sp) #not sure that we actually care about the t vals; just following convention
-	sw $t1 offset($sp)
-	sw $t2 offset($sp)
+	sw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
+	sw $t1 32($sp)
+	sw $t2 36($sp)
 
-	sw $a0 , offset($sp) #a0 doesn't really change, so do we need this?
-	sw $a1 , offset($sp)
-	sw $a2 , offset($sp)
+	sw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
+	sw $a1 , 44($sp)
+	sw $a2 , 48($sp)
 
-	sw $v0 , offset($sp) #do we even have any return from a higher nested instruction?
+	sw $v0 , 52($sp) #do we even have any return from a higher nested instruction?
 
 	#updating parameters passed to swap
 	addi $a2 $s3 0 #passing midpoint index to a2
@@ -298,24 +302,29 @@ medianOfThree:
 
 
 	#caller return responsibilities
-	lw $t0 offset($sp) #not sure that we actually care about the t vals; just following convention
-	lw $t1 offset($sp)
-	lw $t2 offset($sp)
+	lw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
+	lw $t1 32($sp)
+	lw $t2 36($sp)
 
-	lw $a0 , offset($sp) #a0 doesn't really change, so do we need this?
-	lw $a1 , offset($sp)
-	lw $a2 , offset($sp)
+	lw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
+	lw $a1 , 44($sp)
+	lw $a2 , 48($sp)
 
 	#calle return responsibilities
-	lw $s0-sWhatever offset($sp)
-	lw $ra offset($sp)
-	lw $fp offset($sp)
-	addi $sp, $sp, offset #move the stacker pointer to pop it off
-
+	lw $s0, 20($sp)
+	lw $s1, 16($sp)
+	lw $s2, 12($sp)
+	lw $s3, 8($sp)
+	lw $ra 24($sp)
+	lw $fp 4($sp)
+	addi $sp, $sp, 24 #move the stacker pointer to pop it off
+	addi $fp, $fp, 24
 		# return to caller
-	jr $ra
+		jr $ra
 
 
+
+	#
 
 
 ########################
@@ -338,7 +347,7 @@ partition:
 
 	slt $t0, $a2, $a1		# checks if $a1 >= $a2
 	bne $t0, $zero, pivotCheck	# jump to next if statement
-	mov $v0, $a1 			# return left
+	move $v0, $a1 			# return left
 	jr $ra				# return to caller
 
 	# if both left and right elements are less than the pivot, return right
@@ -394,8 +403,6 @@ quickSort:
 	# a2: right = last index to be sorted
 	# Sort the list using recursive quick sort using the above functions
 
-	### INSERT YOUR CODE HERE
-
 	#organizational tasks
 
 	#median of three pivot; first set of inputs should already be set and
@@ -403,7 +410,7 @@ quickSort:
 
   sub $t0, $a2, $a1 #a2-a1 = numElements in list
   slti $t1, $t0, 2 #if a2-a1 < <2 set a flag
-  bnez $t1, $ra #return to caller if elements less than 2, ie sorted already
+  bnez $t1, quickSortEnd #return to caller if elements less than 2, ie sorted already
 
   #if we have a valid list then we can jump to median of three
   #pre call organization; is this necesarry because our function is meant to
@@ -469,8 +476,10 @@ quickSort:
   addi $a1, $s0, 1 #making quicksort param1 = index+1
   jal quickSort
 
-	# return to caller
-	jr $ra
+  # return to caller
+  quickSortEnd:
+  jr $ra
+
 
 
 

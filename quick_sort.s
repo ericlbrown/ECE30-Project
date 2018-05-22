@@ -11,7 +11,7 @@ quickSort:
 
   sub $t0, $a2, $a1 #a2-a1 = numElements in list
   slti $t1, $t0, 2 #if a2-a1 < <2 set a flag
-  bnez $t1, $ra #return to caller if elements less than 2, ie sorted already
+  bnez $t1, quickSortEnd #return to caller if elements less than 2, ie sorted already
 
   #if we have a valid list then we can jump to median of three
   #pre call organization; is this necesarry because our function is meant to
@@ -77,5 +77,6 @@ quickSort:
   addi $a1, $s0, 1 #making quicksort param1 = index+1
   jal quickSort
 
-	# return to caller
-	jr $ra
+  # return to caller
+  quickSortEnd:
+  jr $ra
