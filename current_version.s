@@ -110,8 +110,10 @@ lw $fp, 4($sp)
 ########################
 #   medianOfThree      #
 ########################
+########################
+#   medianOfThree      #
+########################
 medianOfThree:
-c
 
 	### INSERT YOUR CODE HERE
 
@@ -136,29 +138,29 @@ srl $s0, $s0, 2 #(lo+hi)/2
 
 sll $t0, $a1, 2
 add $t1, $t0, $a0 #address of x[lo] is now stored in t1 : x[lo] = *x[0]+offset
-lw $s2, 0($t1) #our actual value from x[lo] is now stored in s2
+lw $s1, 0($t1) #our actual value from x[lo] is now stored in s1
 
 #repeating above for x[hi]
 
 sll $t0, $a2, 2 #this time we use the index for x[high]/ ie the right value
 add $t1, $t0, $a0
-lw $s3, 0($t1) #load to s3 the value stored in memory x[hi]
+lw $s2, 0($t1) #load to s2 the value stored in memory x[hi]
 
 
 #repeat for x[mid]
 
 sll $t0, $s0, 2
 add $t1, $t0, $a0
-lw $s4, 0($t1) #load to s4 the value stored in memory x[mid]
+lw $s3, 0($t1) #load to s3 the value stored in memory x[mid]
 
 # so now we have :
-#val x[lo] stored in s2
-#val x[hi] stored in s3
-#val x[mid] stored in s4
+#val x[lo] stored in s1
+#val x[hi] stored in s2
+#val x[mid] stored in s3
 
 ###############################################################################
 # if(x[lo]>x[hi]) swap(x,lo,hi)
-slt $t2, $s2, $s3 #evaluate x[lo] <x[hi]
+slt $t2, $s1, $s2 #evaluate x[lo] <x[hi]
 addi $t2, $t2, -1 #so if x[lo]<x[hi] t2 = 0 else t2 = -1
 
 #the reason I did this was because we have a pseduo instruction that will evaluate
@@ -201,11 +203,11 @@ lw $a2 , offset($sp)
 
 sll $t0, $a2, 2 #this time we use the index for x[high]/ ie the right value
 add $t1, $t0, $a0
-lw $s3, 0($t1) #load to s3 the value stored in memory x[hi]
+lw $s2, 0($t1) #load to s2 the value stored in memory x[hi]
 
 #mid is still the same value as before
 
-slt $t2, $s4, $s3 #compare x[mid]<x[hi]
+slt $t2, $s3, $s2 #compare x[mid]<x[hi]
 addi $t2, $t2, -1 #same trick as before
 
 #caller responsibilities
@@ -221,7 +223,7 @@ sw $v0 , offset($sp) #do we even have any return from a higher nested instructio
 
 #this time we do need to change some things around when passing to swap
 #$a0 is still the first address of the array
-addi $a1 $s4 0 #passing midpoint index to a1
+addi $a1 $s3 0 #passing midpoint index to a1
 #a2 is still holding our hi index values
 
 bgezal $t2, swap #same jump trick as previously described
@@ -238,17 +240,17 @@ lw $a2 , offset($sp)
 ###############################################################################
 #if(x[lo]>x[mid]) swap(x,lo,mid)
 
-#reloading values from x[lo] and x[mid] into s2 and s4 respectively
+#reloading values from x[lo] and x[mid] into s1 and s3 respectively
 sll $t0, $a1, 2 #multiply index by 4
 add $t1, $t0, $a0 #address of x[lo] is now stored in t1 : x[lo] = *x[0]+offset
-lw $s2, 0($t1) #our actual value from x[lo] is now stored in s2
+lw $s1, 0($t1) #our actual value from x[lo] is now stored in s1
 
 sll $t0 $s0, 2 #this time we use the index for x[mid] that we stored in $s0
 add $t1, $t0, $a0
-lw $s4, 0($t1) #load to s4 the value stored in memory x[mid]
+lw $s3, 0($t1) #load to s4 the value stored in memory x[mid]
 
 
-slt $t2, $s2, $s4 #comparing x[lo]<x[mid]
+slt $t2, $s1, $s3 #comparing x[lo]<x[mid]
 addi $t2, $t2, -1
 
 #caller responsibilities
@@ -263,7 +265,7 @@ sw $a2 , offset($sp)
 sw $v0 , offset($sp) #do we even have any return from a higher nested instruction?
 
 #updating parameters passed to swap
-addi $a2 $s4 0 #passing midpoint index to a2
+addi $a2 $s3 0 #passing midpoint index to a2
 #a1 should still be the index of x[lo]
 
 bgezal $t2, swap #same jump trick as previously described
@@ -292,7 +294,7 @@ sw $a2 , offset($sp)
 sw $v0 , offset($sp) #do we even have any return from a higher nested instruction?
 
 #updating parameters passed to swap
-addi $a2 $s4 0 #passing midpoint index to a2
+addi $a2 $s3 0 #passing midpoint index to a2
 #a1 should still be the index of x[lo]
 
 jal		swap				# jump to swap and save position to $ra
@@ -323,6 +325,7 @@ addi $sp, $sp, offset #move the stacker pointer to pop it off
 
 	# return to caller
 	jr $ra
+
 
 
 ########################

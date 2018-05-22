@@ -5,7 +5,9 @@ Purpose:
   2. To use as reference for stack related activities upon revisiting this code
   3. If changes are made said changes will implemented across all code
 
+###############################################################################
 swap function:
+
   # a0: base address
   # a1: index 1
   # a2: index 2
@@ -21,9 +23,23 @@ swap function:
 Conclusion, we only have to make room on the stack for 3 registers, $sp, and $fp
 Move stack 16 units
 
+#################################################################################
+
 median of three:
+
   # a0: base address
   # a1: left
   # a2: right
   # Find the median of the first, last and the middle values of the given list
   # Make this the first element of the list by swapping
+
+  $s0: used to store the number of the index the middle of the set
+  $s1: value from x[lo]
+  $s2: value from x[hi]
+  $s3: value from x[mid]
+
+  $t0: used generally for storing offset to load array index values
+  $t1: used in same manner as $t0, we load values from it
+  $t2: used for comparison to determine whether to swap values
+
+  So we have a total of 7 registers, $sp, $fp
