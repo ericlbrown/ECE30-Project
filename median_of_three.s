@@ -7,11 +7,14 @@ medianOfThree:
 
 	#orgaizational calle business
 
-addi $sp , $sp, num #tbd how far to increment the stack pointer
-sw $ra, num($sp)
-#sw $s0 - $s_whatever #tbd how many we need to store
-sw $fp
-addi $fp, $fp, num
+addi $sp , $sp, -60 #tbd how far to increment the stack pointer
+sw $ra, 24($sp)
+sw $s0, 20($sp)
+sw $s1, 16($sp)
+sw $s2, 12($sp)
+sw $s3, 8($sp)
+sw $fp, 4($sp)
+addi $fp, $fp, 24
 
 
 #calculating midpoint value
@@ -57,15 +60,15 @@ addi $t2, $t2, -1 #so if x[lo]<x[hi] t2 = 0 else t2 = -1
 #orgaizational for caller before call
 
 #TODO : FIGURE OUT STACK POINTER SIZE
-sw $t0 offset($sp) #not sure that we actually care about the t vals; just following convention
-sw $t1 offset($sp)
-sw $t2 offset($sp)
+sw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
+sw $t1 32($sp)
+sw $t2 36($sp)
 
-sw $a0 , offset($sp) #a0 doesn't really change, so do we need this?
-sw $a1 , offset($sp)
-sw $a2 , offset($sp)
+sw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
+sw $a1 , 44($sp)
+sw $a2 , 48($sp)
 
-sw $v0 , offset($sp) #do we even have any return from a higher nested instruction?
+sw $v0 , 52($sp) #do we even have any return from a higher nested instruction?
 
 #inputs to the swap function are already set because they are the same as for
 #Median of Three
@@ -75,13 +78,13 @@ bgezal $t2 swap #branch on greater than or equal to zero and link
 
 #return from calle orgaizational; mostly useless but will we get docked without it
 
-lw $t0 offset($sp) #not sure that we actually care about the t vals; just following convention
-lw $t1 offset($sp)
-lw $t2 offset($sp)
+lw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
+lw $t1 32($sp)
+lw $t2 36($sp)
 
-lw $a0 , offset($sp) #a0 doesn't really change, so do we need this?
-lw $a1 , offset($sp)
-lw $a2 , offset($sp)
+lw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
+lw $a1 , 44($sp)
+lw $a2 , 48($sp)
 
 
 ################################################################################
@@ -99,15 +102,15 @@ slt $t2, $s3, $s2 #compare x[mid]<x[hi]
 addi $t2, $t2, -1 #same trick as before
 
 #caller responsibilities
-sw $t0 offset($sp) #not sure that we actually care about the t vals; just following convention
-sw $t1 offset($sp)
-sw $t2 offset($sp)
+sw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
+sw $t1 32($sp)
+sw $t2 36($sp)
 
-sw $a0 , offset($sp) #a0 doesn't really change, so do we need this?
-sw $a1 , offset($sp)
-sw $a2 , offset($sp)
+sw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
+sw $a1 , 44($sp)
+sw $a2 , 48($sp)
 
-sw $v0 , offset($sp) #do we even have any return from a higher nested instruction?
+sw $v0 , 52($sp) #do we even have any return from a higher nested instruction?
 
 #this time we do need to change some things around when passing to swap
 #$a0 is still the first address of the array
@@ -118,13 +121,13 @@ bgezal $t2, swap #same jump trick as previously described
 
 #return from calle orgaizational; mostly useless but will we get docked without it
 
-lw $t0 offset($sp) #not sure that we actually care about the t vals; just following convention
-lw $t1 offset($sp)
-lw $t2 offset($sp)
+lw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
+lw $t1 32($sp)
+lw $t2 36($sp)
 
-lw $a0 , offset($sp) #a0 doesn't really change, so do we need this?
-lw $a1 , offset($sp)
-lw $a2 , offset($sp)
+lw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
+lw $a1 , 44($sp)
+lw $a2 , 48($sp)
 ###############################################################################
 #if(x[lo]>x[mid]) swap(x,lo,mid)
 
@@ -142,15 +145,15 @@ slt $t2, $s1, $s3 #comparing x[lo]<x[mid]
 addi $t2, $t2, -1
 
 #caller responsibilities
-sw $t0 offset($sp) #not sure that we actually care about the t vals; just following convention
-sw $t1 offset($sp)
-sw $t2 offset($sp)
+sw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
+sw $t1 32($sp)
+sw $t2 36($sp)
 
-sw $a0 , offset($sp) #a0 doesn't really change, so do we need this?
-sw $a1 , offset($sp)
-sw $a2 , offset($sp)
+sw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
+sw $a1 , 44($sp)
+sw $a2 , 48($sp)
 
-sw $v0 , offset($sp) #do we even have any return from a higher nested instruction?
+sw $v0 , 52($sp) #do we even have any return from a higher nested instruction?
 
 #updating parameters passed to swap
 addi $a2 $s3 0 #passing midpoint index to a2
@@ -159,27 +162,26 @@ addi $a2 $s3 0 #passing midpoint index to a2
 bgezal $t2, swap #same jump trick as previously described
 
 #caller return responsibilities
-lw $t0 offset($sp) #not sure that we actually care about the t vals; just following convention
-lw $t1 offset($sp)
-lw $t2 offset($sp)
+lw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
+lw $t1 32($sp)
+lw $t2 36($sp)
 
-lw $a0 , offset($sp) #a0 doesn't really change, so do we need this?
-lw $a1 , offset($sp)
-lw $a2 , offset($sp)
-
+lw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
+lw $a1 , 44($sp)
+lw $a2 , 48($sp)
 ###############################################################################
 #swap(x,lo,mid).
 
 #caller responsibilities
-sw $t0 offset($sp) #not sure that we actually care about the t vals; just following convention
-sw $t1 offset($sp)
-sw $t2 offset($sp)
+sw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
+sw $t1 32($sp)
+sw $t2 36($sp)
 
-sw $a0 , offset($sp) #a0 doesn't really change, so do we need this?
-sw $a1 , offset($sp)
-sw $a2 , offset($sp)
+sw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
+sw $a1 , 44($sp)
+sw $a2 , 48($sp)
 
-sw $v0 , offset($sp) #do we even have any return from a higher nested instruction?
+sw $v0 , 52($sp) #do we even have any return from a higher nested instruction?
 
 #updating parameters passed to swap
 addi $a2 $s3 0 #passing midpoint index to a2
@@ -189,27 +191,26 @@ jal		swap				# jump to swap and save position to $ra
 
 
 #caller return responsibilities
-lw $t0 offset($sp) #not sure that we actually care about the t vals; just following convention
-lw $t1 offset($sp)
-lw $t2 offset($sp)
+lw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
+lw $t1 32($sp)
+lw $t2 36($sp)
 
-lw $a0 , offset($sp) #a0 doesn't really change, so do we need this?
-lw $a1 , offset($sp)
-lw $a2 , offset($sp)
+lw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
+lw $a1 , 44($sp)
+lw $a2 , 48($sp)
 
 #calle return responsibilities
-lw $s0-sWhatever offset($sp)
-lw $ra offset($sp)
-lw $fp offset($sp)
-addi $sp, $sp, offset #move the stacker pointer to pop it off
-
+lw $s0, 20($sp)
+lw $s1, 16($sp)
+lw $s2, 12($sp)
+lw $s3, 8($sp)
+lw $ra 24($sp)
+lw $fp 4($sp)
+addi $sp, $sp, 24 #move the stacker pointer to pop it off
+addi $fp, $fp, 24
 	# return to caller
 	jr $ra
 
 
 
-#REMEMBER THE STACK
-#make sure to save the values in $s in the stack to prevent loss
-
-	# return to caller
-	jr $ra
+#

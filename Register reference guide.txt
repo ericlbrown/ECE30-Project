@@ -43,3 +43,7 @@ median of three:
   $t2: used for comparison to determine whether to swap values
 
   So we have a total of 7 registers, $sp, $fp
+
+##############################################################################
+
+quickSort:

@@ -4,8 +4,6 @@ quickSort:
 	# a2: right = last index to be sorted
 	# Sort the list using recursive quick sort using the above functions
 
-	### INSERT YOUR CODE HERE
-
 	#organizational tasks
 
 	#median of three pivot; first set of inputs should already be set and

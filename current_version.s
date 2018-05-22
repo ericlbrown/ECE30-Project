@@ -41,7 +41,7 @@ main:
 	la $a0,array
 	li $a1,0
 	li $a2,7
-	jal quickSort
+	jal medianofThree
 
 	# Print the sorted array
 	la $a0,array

@@ -18,6 +18,7 @@ swap:
 	sw $s2, 12($sp)
 	sw $s3, 8($sp)
 	sw $fp, 4($sp)
+	addi $fp, $fp, -20
 
 #body of swap function
 
