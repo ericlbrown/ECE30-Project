@@ -2,11 +2,6 @@
 #   medianOfThree      #
 ########################
 medianOfThree:
-	# a0: base address
-	# a1: left
-	# a2: right
-	# Find the median of the first, last and the middle values of the given list
-	# Make this the first element of the list by swapping
 
 	### INSERT YOUR CODE HERE
 
@@ -29,21 +24,20 @@ srl $s0, $s0, 2 #(lo+hi)/2
 
 #loading value from x[lo]
 
-sll $a1, $a1, 2
-add $t1, $a1, $a0 #address of x[lo] is now stored in t1 : x[lo] = *x[0]+offset
+sll $t0, $a1, 2
+add $t1, $t0, $a0 #address of x[lo] is now stored in t1 : x[lo] = *x[0]+offset
 lw $s2, 0($t1) #our actual value from x[lo] is now stored in s2
 
 #repeating above for x[hi]
 
-sll $a2, $a2, 2 #this time we use the index for x[high]/ ie the right value
+sll $t0, $a2, 2 #this time we use the index for x[high]/ ie the right value
 add $t1, $t0, $a0
 lw $s3, 0($t1) #load to s3 the value stored in memory x[hi]
 
 
 #repeat for x[mid]
 
-mult $s0, $s1 #this time we use the index for x[mid] that we stored in $s0
-mflo $t0
+sll $t0, $s0, 2
 add $t1, $t0, $a0
 lw $s4, 0($t1) #load to s4 the value stored in memory x[mid]
 
@@ -95,8 +89,7 @@ lw $a2 , offset($sp)
 
 #need to reload the value at x[hi] since things have now been swapped
 
-mult $a2, $s1 #this time we use the index for x[high]/ ie the right value
-mflo $t0
+sll $t0, $a2, 2 #this time we use the index for x[high]/ ie the right value
 add $t1, $t0, $a0
 lw $s3, 0($t1) #load to s3 the value stored in memory x[hi]
 
@@ -136,14 +129,11 @@ lw $a2 , offset($sp)
 #if(x[lo]>x[mid]) swap(x,lo,mid)
 
 #reloading values from x[lo] and x[mid] into s2 and s4 respectively
-li $s1, 4 #used to multiply by index value for number of bits offset from array start
-mult $a1, $s1 #multiply index by offset constant
-mflo $t0 #result stored in t0
+sll $t0, $a1, 2 #multiply index by 4
 add $t1, $t0, $a0 #address of x[lo] is now stored in t1 : x[lo] = *x[0]+offset
 lw $s2, 0($t1) #our actual value from x[lo] is now stored in s2
 
-mult $s0, $s1 #this time we use the index for x[mid] that we stored in $s0
-mflo $t0
+sll $t0 $s0, 2 #this time we use the index for x[mid] that we stored in $s0
 add $t1, $t0, $a0
 lw $s4, 0($t1) #load to s4 the value stored in memory x[mid]
 
@@ -212,6 +202,14 @@ lw $s0-sWhatever offset($sp)
 lw $ra offset($sp)
 lw $fp offset($sp)
 addi $sp, $sp, offset #move the stacker pointer to pop it off
+
+	# return to caller
+	jr $ra
+
+
+
+#REMEMBER THE STACK
+#make sure to save the values in $s in the stack to prevent loss
 
 	# return to caller
 	jr $ra

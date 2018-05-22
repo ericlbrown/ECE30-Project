@@ -1,0 +1,29 @@
+Register Reference Guide for ECE 30 Spring 18 Lab Project
+
+Purpose:
+  1. To label and explain registers as they are used in each function
+  2. To use as reference for stack related activities upon revisiting this code
+  3. If changes are made said changes will implemented across all code
+
+swap function:
+  # a0: base address
+  # a1: index 1
+  # a2: index 2
+  # Swap the elements at the given indices in the list
+
+  $t0: used as a temp variable for finding offsets for addressing array elements
+  $t1: used as a temp variable for finding offsets for addressing array elements
+
+  $s0: used solely as temp in swapping
+  $s1: used to store value from x[lo] after it is loaded
+  $s2: used to store value from x[hi] after it is loaded
+
+Conclusion, we only have to make room on the stack for 3 registers, $sp, and $fp
+Move stack 16 units
+
+median of three:
+  # a0: base address
+  # a1: left
+  # a2: right
+  # Find the median of the first, last and the middle values of the given list
+  # Make this the first element of the list by swapping
