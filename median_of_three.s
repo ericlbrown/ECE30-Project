@@ -14,13 +14,16 @@ sw $s1, 16($sp)
 sw $s2, 12($sp)
 sw $s3, 8($sp)
 sw $fp, 4($sp)
-addi $fp, $fp, 24
+addi $fp, $fp, -60
 
 
 #calculating midpoint value
 
-addi $s0, $a1, $a2 #s0 = lo+hi
-srl $s0, $s0, 2 #(lo+hi)/2
+add $s0, $a1, $a2 #s0 = lo+hi
+li $t0, 2
+div $s0, $t0 #(lo+hi)/2
+mflo $s0 #loads value into register srl didn't seem to work
+
 
 #now we will worry about getting values from our indexed addresses
 #at least for the first conditional
@@ -51,15 +54,14 @@ lw $s3, 0($t1) #load to s3 the value stored in memory x[mid]
 
 ###############################################################################
 # if(x[lo]>x[hi]) swap(x,lo,hi)
-slt $t2, $s1, $s2 #evaluate x[lo] <x[hi]
-addi $t2, $t2, -1 #so if x[lo]<x[hi] t2 = 0 else t2 = -1
+slt $t2, $s2, $s1 #evaluate x[hi] <x[lo]
+addi $t2, $t2, -1 #so if x[hi]<x[lo] t2 = 0 else t2 = -1
 
 #the reason I did this was because we have a pseduo instruction that will evaluate
 #then jump and link to our swap function so it saves time for us
 
 #orgaizational for caller before call
 
-#TODO : FIGURE OUT STACK POINTER SIZE
 sw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
 sw $t1 32($sp)
 sw $t2 36($sp)
@@ -81,7 +83,6 @@ bgezal $t2 swap #branch on greater than or equal to zero and link
 lw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
 lw $t1 32($sp)
 lw $t2 36($sp)
-
 lw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
 lw $a1 , 44($sp)
 lw $a2 , 48($sp)
@@ -98,7 +99,7 @@ lw $s2, 0($t1) #load to s2 the value stored in memory x[hi]
 
 #mid is still the same value as before
 
-slt $t2, $s3, $s2 #compare x[mid]<x[hi]
+slt $t2, $s2, $s3 #compare x[hi]<x[mid]
 addi $t2, $t2, -1 #same trick as before
 
 #caller responsibilities
@@ -141,7 +142,7 @@ add $t1, $t0, $a0
 lw $s3, 0($t1) #load to s4 the value stored in memory x[mid]
 
 
-slt $t2, $s1, $s3 #comparing x[lo]<x[mid]
+slt $t2, $s3, $s1 #comparing x[lo]<x[mid]
 addi $t2, $t2, -1
 
 #caller responsibilities
@@ -210,7 +211,3 @@ addi $sp, $sp, 24 #move the stacker pointer to pop it off
 addi $fp, $fp, 24
 	# return to caller
 	jr $ra
-
-
-
-#

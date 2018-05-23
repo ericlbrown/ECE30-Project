@@ -16,7 +16,7 @@
 
 
 .data
-array:	.word 5, 8, 1, 9, 3, 4, 2, 6
+array:	.word 4, 0,-9, 1, -3, 5
 
 init:	.asciiz "The initial array is: "
 final:	.asciiz "The sorted array is: "
@@ -34,19 +34,19 @@ main:
 	# Print the array
 	la $a0,array
 	la $a1,init
-	li $a2,8
+	li $a2,6
 	jal printList
 
 	# Quicksort
 	la $a0,array
 	li $a1,0
-	li $a2,7
-	jal medianofThree
+	li $a2,4
+	jal medianOfThree
 
 	# Print the sorted array
 	la $a0,array
 	la $a1,final
-	li $a2,8
+	li $a2,6
 	jal printList
 
 
@@ -54,7 +54,7 @@ exit:	li $v0,10
 	syscall
 
 
-########################
+#########################
 #        swap          #
 ########################
 swap:
@@ -102,11 +102,9 @@ swap:
 	lw $s2, 12($sp)
 	lw $s3, 8($sp)
 	lw $fp, 4($sp)
+	addi $sp, $sp, 20
 # return to caller
 	jr $ra
-
-
-
 
 
 	########################
@@ -125,13 +123,16 @@ swap:
 	sw $s2, 12($sp)
 	sw $s3, 8($sp)
 	sw $fp, 4($sp)
-	addi $fp, $fp, 24
+	addi $fp, $fp, -60
 
 
 	#calculating midpoint value
 
 	add $s0, $a1, $a2 #s0 = lo+hi
-	srl $s0, $s0, 2 #(lo+hi)/2
+	li $t0, 2
+	div $s0, $t0 #(lo+hi)/2
+	mflo $s0 #loads value into register srl didn't seem to work
+
 
 	#now we will worry about getting values from our indexed addresses
 	#at least for the first conditional
@@ -162,15 +163,14 @@ swap:
 
 	###############################################################################
 	# if(x[lo]>x[hi]) swap(x,lo,hi)
-	slt $t2, $s1, $s2 #evaluate x[lo] <x[hi]
-	addi $t2, $t2, -1 #so if x[lo]<x[hi] t2 = 0 else t2 = -1
+	slt $t2, $s2, $s1 #evaluate x[hi] <x[lo]
+	addi $t2, $t2, -1 #so if x[hi]<x[lo] t2 = 0 else t2 = -1
 
 	#the reason I did this was because we have a pseduo instruction that will evaluate
 	#then jump and link to our swap function so it saves time for us
 
 	#orgaizational for caller before call
 
-	#TODO : FIGURE OUT STACK POINTER SIZE
 	sw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
 	sw $t1 32($sp)
 	sw $t2 36($sp)
@@ -192,7 +192,6 @@ swap:
 	lw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
 	lw $t1 32($sp)
 	lw $t2 36($sp)
-
 	lw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
 	lw $a1 , 44($sp)
 	lw $a2 , 48($sp)
@@ -209,7 +208,7 @@ swap:
 
 	#mid is still the same value as before
 
-	slt $t2, $s3, $s2 #compare x[mid]<x[hi]
+	slt $t2, $s2, $s3 #compare x[hi]<x[mid]
 	addi $t2, $t2, -1 #same trick as before
 
 	#caller responsibilities
@@ -252,7 +251,7 @@ swap:
 	lw $s3, 0($t1) #load to s4 the value stored in memory x[mid]
 
 
-	slt $t2, $s1, $s3 #comparing x[lo]<x[mid]
+	slt $t2, $s3, $s1 #comparing x[lo]<x[mid]
 	addi $t2, $t2, -1
 
 	#caller responsibilities
@@ -323,77 +322,6 @@ swap:
 		jr $ra
 
 
-
-	#
-
-
-########################
-#      partition       #
-########################
-partition:
-	# a0: base address
-	# a1: left  = first index to be partitioned
-	# a2: right = last index to be partitioned
-	# a3: pivot value
-	# Return:
-	# v0: The final index for the pivot element
-	# Separate the list into two sections based on the pivot value
-
-
-
-	# organizational tasks
-
-	# if $a1 >= $a2 , return $a1 (list w/ < 2 elements dont need to be partitoned)
-
-	slt $t0, $a2, $a1		# checks if $a1 >= $a2
-	bne $t0, $zero, pivotCheck	# jump to next if statement
-	move $v0, $a1 			# return left
-	jr $ra				# return to caller
-
-	# if both left and right elements are less than the pivot, return right
-
-	pivotCheck:
-	slt $t0, $a1, $a3	# $t0 = 1 if left < pivot
-	slt $t1, $a2, $a3	# $t1 = 1 if right < pivot
-	bne $t0, $zero, pivotCheck 	# if $t0 == 0, end if statement
-
-	#left < pivot so jump to next ‘if’ statement in partitionBody
-
-	j partitionBody
-
-	beq $t1, $zero, partitionBody # if $t1 == 0, end if statement
-	mov $v0, $a2		#return right
-	jr $ra			#return to caller
-
-
-	#if x[left] > pivot, swap(x, left, right - 1), return partition(x, left, right-1, pivot)
-
-	partitionBody:
-	sll $t0, $a1, 2		# multiply index by 4 to determine offset
-	add $t0, $t0, $a0	# $t0 points to x[left]
-	lw $s0, 0($t0)		# $s0 contains the value of x[left]
-	slt $t1, $a3, $s0	# check if x[left] > pivot
-	beq $t1, $zero, partitionReturn	# if x[left] < pivot, jump to else statement
-
-	# (do we need to save the values of $a1 and $a2 before calling swap? I think or nah)
-	# lw $a1, ($sp)
-	# lw $a2, ($sp)
-	addi $a2, $a2, -1 	#right - 1 because indexing starts at zero???
-		jal swap
-		addi $a2, $a2, -1
-	jal partition
-	jr $ra
-
-
-
-	# else return partition(x, left + 1, right, pivot)
-
-	partitionReturn:
-		addi $a1, $a1, 1	# left + 1
-	jal partition			# return to caller
-	jr $ra
-
-
 ########################
 #      quickSort       #
 ########################
@@ -422,7 +350,7 @@ quickSort:
   jal medianOfThree
 
   sll $s0, $a1, 2 #multiply a2 by 4 to get offset to load value there
-  addi $t0, $a0, $s0 #we are now finding the address of x[first]
+  add $t0, $a0, $s0 #we are now finding the address of x[first]
   lw $a3, 0($t0) #loading value from x[first] to $a3 which is the pivot and upcoming argument
 
   #pre partion call organization

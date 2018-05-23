@@ -23,7 +23,7 @@ quickSort:
   jal medianOfThree
 
   sll $s0, $a1, 2 #multiply a2 by 4 to get offset to load value there
-  addi $t0, $a0, $s0 #we are now finding the address of x[first]
+  add $t0, $a0, $s0 #we are now finding the address of x[first]
   lw $a3, 0($t0) #loading value from x[first] to $a3 which is the pivot and upcoming argument
 
   #pre partion call organization

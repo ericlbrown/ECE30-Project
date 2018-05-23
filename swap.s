@@ -46,5 +46,6 @@ swap:
 	lw $s2, 12($sp)
 	lw $s3, 8($sp)
 	lw $fp, 4($sp)
+	addi $sp, $sp, 20
 # return to caller
 	jr $ra
