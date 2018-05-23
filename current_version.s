@@ -317,7 +317,6 @@ swap:
 	lw $ra, 24($sp)
 	lw $fp, 4($sp)
 	addi $sp, $sp, 24 #move the stacker pointer to pop it off
-	addi $fp, $fp, 24
 		# return to caller
 		jr $ra
 
