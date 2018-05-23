@@ -62,9 +62,9 @@ addi $t2, $t2, -1 #so if x[hi]<x[lo] t2 = 0 else t2 = -1
 
 #orgaizational for caller before call
 
-sw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
-sw $t1 32($sp)
-sw $t2 36($sp)
+sw $t0, 28($sp) #not sure that we actually care about the t vals; just following convention
+sw $t1, 32($sp)
+sw $t2, 36($sp)
 
 sw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
 sw $a1 , 44($sp)
@@ -80,9 +80,9 @@ bgezal $t2 swap #branch on greater than or equal to zero and link
 
 #return from calle orgaizational; mostly useless but will we get docked without it
 
-lw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
-lw $t1 32($sp)
-lw $t2 36($sp)
+lw $t0, 28($sp) #not sure that we actually care about the t vals; just following convention
+lw $t1, 32($sp)
+lw $t2, 36($sp)
 lw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
 lw $a1 , 44($sp)
 lw $a2 , 48($sp)
@@ -103,9 +103,9 @@ slt $t2, $s2, $s3 #compare x[hi]<x[mid]
 addi $t2, $t2, -1 #same trick as before
 
 #caller responsibilities
-sw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
-sw $t1 32($sp)
-sw $t2 36($sp)
+sw $t0, 28($sp) #not sure that we actually care about the t vals; just following convention
+sw $t1, 32($sp)
+sw $t2, 36($sp)
 
 sw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
 sw $a1 , 44($sp)
@@ -115,16 +115,16 @@ sw $v0 , 52($sp) #do we even have any return from a higher nested instruction?
 
 #this time we do need to change some things around when passing to swap
 #$a0 is still the first address of the array
-addi $a1 $s3 0 #passing midpoint index to a1
+addi $a1, $s0, 0 #passing midpoint index to a1
 #a2 is still holding our hi index values
 
 bgezal $t2, swap #same jump trick as previously described
 
 #return from calle orgaizational; mostly useless but will we get docked without it
 
-lw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
-lw $t1 32($sp)
-lw $t2 36($sp)
+lw $t0, 28($sp) #not sure that we actually care about the t vals; just following convention
+lw $t1, 32($sp)
+lw $t2, 36($sp)
 
 lw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
 lw $a1 , 44($sp)
@@ -139,16 +139,16 @@ lw $s1, 0($t1) #our actual value from x[lo] is now stored in s1
 
 sll $t0 $s0, 2 #this time we use the index for x[mid] that we stored in $s0
 add $t1, $t0, $a0
-lw $s3, 0($t1) #load to s4 the value stored in memory x[mid]
+lw $s3, 0($t1) #load to s3 the value stored in memory x[mid]
 
 
-slt $t2, $s3, $s1 #comparing x[lo]<x[mid]
+slt $t2, $s3, $s1 #comparing x[mid]<x[lo]
 addi $t2, $t2, -1
 
 #caller responsibilities
-sw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
-sw $t1 32($sp)
-sw $t2 36($sp)
+sw $t0 ,28($sp) #not sure that we actually care about the t vals; just following convention
+sw $t1 ,32($sp)
+sw $t2 ,36($sp)
 
 sw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
 sw $a1 , 44($sp)
@@ -157,15 +157,15 @@ sw $a2 , 48($sp)
 sw $v0 , 52($sp) #do we even have any return from a higher nested instruction?
 
 #updating parameters passed to swap
-addi $a2 $s3 0 #passing midpoint index to a2
+addi $a2, $s0, 0 #passing midpoint index to a2
 #a1 should still be the index of x[lo]
 
 bgezal $t2, swap #same jump trick as previously described
 
 #caller return responsibilities
-lw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
-lw $t1 32($sp)
-lw $t2 36($sp)
+lw $t0 ,28($sp) #not sure that we actually care about the t vals; just following convention
+lw $t1 ,32($sp)
+lw $t2 ,36($sp)
 
 lw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
 lw $a1 , 44($sp)
@@ -174,9 +174,9 @@ lw $a2 , 48($sp)
 #swap(x,lo,mid).
 
 #caller responsibilities
-sw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
-sw $t1 32($sp)
-sw $t2 36($sp)
+sw $t0, 28($sp) #not sure that we actually care about the t vals; just following convention
+sw $t1, 32($sp)
+sw $t2, 36($sp)
 
 sw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
 sw $a1 , 44($sp)
@@ -185,16 +185,16 @@ sw $a2 , 48($sp)
 sw $v0 , 52($sp) #do we even have any return from a higher nested instruction?
 
 #updating parameters passed to swap
-addi $a2 $s3 0 #passing midpoint index to a2
+addi $a2, $s0, 0 #passing midpoint index to a2
 #a1 should still be the index of x[lo]
 
 jal		swap				# jump to swap and save position to $ra
 
 
 #caller return responsibilities
-lw $t0 28($sp) #not sure that we actually care about the t vals; just following convention
-lw $t1 32($sp)
-lw $t2 36($sp)
+lw $t0, 28($sp) #not sure that we actually care about the t vals; just following convention
+lw $t1, 32($sp)
+lw $t2, 36($sp)
 
 lw $a0 , 40($sp) #a0 doesn't really change, so do we need this?
 lw $a1 , 44($sp)
@@ -205,8 +205,8 @@ lw $s0, 20($sp)
 lw $s1, 16($sp)
 lw $s2, 12($sp)
 lw $s3, 8($sp)
-lw $ra 24($sp)
-lw $fp 4($sp)
+lw $ra, 24($sp)
+lw $fp, 4($sp)
 addi $sp, $sp, 24 #move the stacker pointer to pop it off
 addi $fp, $fp, 24
 	# return to caller
